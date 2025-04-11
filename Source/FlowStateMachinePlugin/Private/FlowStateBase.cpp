@@ -1,7 +1,8 @@
-// JellyfishZero All Rights Reserved
+﻿// JellyfishZero All Rights Reserved
 
 
 #include "FlowStateBase.h"
+#include "Engine/GameInstance.h"
 
 DEFINE_LOG_CATEGORY(LOG_FlowState);
 

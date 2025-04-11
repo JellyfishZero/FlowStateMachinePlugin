@@ -1,4 +1,4 @@
-// JellyfishZero All Rights Reserved
+﻿// JellyfishZero All Rights Reserved
 
 
 #include "FlowStateMachine.h"
@@ -19,6 +19,8 @@ void UFlowStateMachine::Initialize(UObject* InWorldContext)
 
 	WorldContext = InWorldContext;
 	bInitialized = true;
+
+	UE_LOG(LOG_FlowStateMachine, Warning, TEXT("FlowStateMachine 初始化完成！"));
 
 	AutoRegisterStatesFromSettings();
 }

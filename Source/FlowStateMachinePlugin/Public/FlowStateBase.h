@@ -1,4 +1,4 @@
-// JellyfishZero All Rights Reserved
+﻿// JellyfishZero All Rights Reserved
 
 #pragma once
 
@@ -41,7 +41,7 @@ public:
 	 * 初始化狀態機
 	 * @param InWorldContext - 持有State的Context
 	 */
-	UFUNCTION(BlueprintCallable,Category = "Flow State")
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	void Initialize(UObject* InWorldContext);
 
 	/**
@@ -130,7 +130,7 @@ public:
 #pragma endregion
 
 
-	 UWorld* GetWorld() const override;
+	UWorld* GetWorld() const override;
 
 protected:
 

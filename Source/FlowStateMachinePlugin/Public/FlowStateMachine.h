@@ -21,6 +21,7 @@ public:
 
 	/**
 	 * 初始化狀態機
+	 * 建議初始化呼叫位置：GameInstance Init()
 	 * @param InWorldContext - StateMachine 執行的 Context
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Flow State")
@@ -33,7 +34,8 @@ public:
 	FName GetCurrentStateName() const;
 
 	/**
-	 * 更改為指定 State
+	 * 更改為指定 State，初次進入State也請呼叫這個。
+	 * 初次呼叫位置，建議在GameMode之類的BeginPlay()後。
 	 * @param StateName - 名稱
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Flow State")

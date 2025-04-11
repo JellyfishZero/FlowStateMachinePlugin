@@ -4,6 +4,7 @@
 #include "FlowStateMachine.h"
 
 #include "Engine/DataTable.h"
+#include "Engine/Engine.h"
 #include "FlowStateMachineSettings.h"
 #include "FlowStateRow.h"
 
@@ -11,7 +12,7 @@ DEFINE_LOG_CATEGORY(LOG_FlowStateMachine);
 
 void UFlowStateMachine::Initialize(UObject* InWorldContext)
 {
-	if(bInitialized)
+	if (bInitialized)
 	{
 		UE_LOG(LOG_FlowStateMachine, Warning, TEXT("FlowStateMachine 已初始化過，忽略這次初始化"));
 		return;
@@ -27,12 +28,12 @@ void UFlowStateMachine::Initialize(UObject* InWorldContext)
 
 FName UFlowStateMachine::GetCurrentStateName() const
 {
-	if(StateStack.Num() > 0)
+	if (StateStack.Num() > 0)
 	{
 		UFlowStateBase* Current = StateStack.Last();
-		for(const auto& Pair : RegisteredStates)
+		for (const auto& Pair : RegisteredStates)
 		{
-			if(Pair.Value == Current)
+			if (Pair.Value == Current)
 			{
 				return Pair.Key;
 			}
@@ -43,13 +44,13 @@ FName UFlowStateMachine::GetCurrentStateName() const
 
 void UFlowStateMachine::ChangeState(FName StateName)
 {
-	if(!RegisteredStates.Contains(StateName))
+	if (!RegisteredStates.Contains(StateName))
 	{
 		UE_LOG(LOG_FlowState, Error, TEXT("ChangeState: 未註冊的 State [%s]"), *StateName.ToString());
 		return;
 	}
 
-	if(StateStack.Num() == 1 && StateStack.Last()->GetClass() == RegisteredStates[StateName]->GetClass())
+	if (StateStack.Num() == 1 && StateStack.Last()->GetClass() == RegisteredStates[StateName]->GetClass())
 	{
 		UE_LOG(LOG_FlowState, Warning, TEXT("ChangeState: State [%s] 已經是當前狀態，略過。"), *StateName.ToString());
 		return;
@@ -58,12 +59,12 @@ void UFlowStateMachine::ChangeState(FName StateName)
 	UObject* OutData = nullptr;
 
 	// Pop 所有現有 State
-	while(StateStack.Num() > 0)
+	while (StateStack.Num() > 0)
 	{
 		UFlowStateBase* Current = StateStack.Pop();
 		Current->Pause();
 
-		if(!OutData)
+		if (!OutData)
 		{
 			OutData = Current->TakeStateData();
 		}
@@ -79,13 +80,13 @@ void UFlowStateMachine::ChangeState(FName StateName)
 
 void UFlowStateMachine::PushState(FName StateName)
 {
-	if(!RegisteredStates.Contains(StateName))
+	if (!RegisteredStates.Contains(StateName))
 	{
 		UE_LOG(LOG_FlowState, Error, TEXT("PushState: 未註冊的 State [%s]"), *StateName.ToString());
 		return;
 	}
 
-	if(StateStack.Num() > 0 && StateStack.Last()->GetClass() == RegisteredStates[StateName]->GetClass())
+	if (StateStack.Num() > 0 && StateStack.Last()->GetClass() == RegisteredStates[StateName]->GetClass())
 	{
 		UE_LOG(LOG_FlowState, Warning, TEXT("PushState: State [%s] 已經是當前狀態，略過。"), *StateName.ToString());
 		return;
@@ -93,7 +94,7 @@ void UFlowStateMachine::PushState(FName StateName)
 
 	UObject* OutData = nullptr;
 
-	if(StateStack.Num() > 0)
+	if (StateStack.Num() > 0)
 	{
 		UFlowStateBase* Current = StateStack.Last();
 		OutData = Current->TakeStateData();
@@ -107,7 +108,7 @@ void UFlowStateMachine::PushState(FName StateName)
 
 void UFlowStateMachine::PopState()
 {
-	if(StateStack.Num() < 2)
+	if (StateStack.Num() < 2)
 	{
 		UE_LOG(LOG_FlowState, Warning, TEXT("PopState: StateStack < 2"));
 		return;
@@ -121,7 +122,7 @@ void UFlowStateMachine::PopState()
 	TopState->Finish();
 
 	// Resume 下層 State
-	if(StateStack.Num() > 0)
+	if (StateStack.Num() > 0)
 	{
 		UFlowStateBase* Previous = StateStack.Last();
 		Previous->Resume(OutData);
@@ -133,19 +134,42 @@ UWorld* UFlowStateMachine::GetWorld() const
 	return IsValid(WorldContext) ? WorldContext->GetWorld() : nullptr;
 }
 
+void UFlowStateMachine::DumpStates(float Seconds)
+{
+	int StackLen = StateStack.Num();
+	FString StateStr = "";
+	for (int i = StackLen - 1; i >= 0; --i)
+	{
+		const FName* StateName = RegisteredStates.FindKey(StateStack[i]);
+		StateStr += FString::Printf(TEXT("%s"), StateName ? *(*StateName).ToString() : TEXT("Unknown"));
+		if (i == StackLen - 1)
+		{
+			StateStr += TEXT(" <- Current State");
+		}
+		if (i > 0)
+		{
+			StateStr += TEXT("\n");
+		}
+	}
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, Seconds, FColor::Yellow, *StateStr);
+	UE_LOG(LOG_FlowStateMachine, Log, TEXT("State Stack:\n%s"), *StateStr);
+}
+
 void UFlowStateMachine::AutoRegisterStatesFromSettings()
 {
 	const UFlowStateMachineSettings* Settings = GetDefault<UFlowStateMachineSettings>();
-	if(!Settings)
+	if (!Settings)
 	{
-		UE_LOG(LOG_FlowState,Error,TEXT("AutoRegisterStatesFromSettings: 找不到 FlowStateMachineSettings"));
+		UE_LOG(LOG_FlowState, Error, TEXT("AutoRegisterStatesFromSettings: 找不到 FlowStateMachineSettings"));
 		return;
 	}
 
 	UDataTable* Table = Settings->StateTable.LoadSynchronous();
-	if(!Table)
+	if (!Table)
 	{
-		UE_LOG(LOG_FlowState,Error,TEXT("AutoRegisterStatesFromSettings: 無法讀取 StateTable"));
+		UE_LOG(LOG_FlowState, Error, TEXT("AutoRegisterStatesFromSettings: 無法讀取 StateTable"));
 		return;
 	}
 
@@ -153,13 +177,13 @@ void UFlowStateMachine::AutoRegisterStatesFromSettings()
 	TArray<FFlowStateRow*> Rows;
 	Table->GetAllRows<FFlowStateRow>(Context, Rows);
 
-	for(FFlowStateRow* Row : Rows)
+	for (FFlowStateRow* Row : Rows)
 	{
-		if(!Row || !Row->StateClass)
+		if (!Row || !Row->StateClass)
 			continue;
 
 		UFlowStateBase* StateInstance = NewObject<UFlowStateBase>(this, Row->StateClass);
-		if(!StateInstance)
+		if (!StateInstance)
 			continue;
 		StateInstance->Initialize(WorldContext);
 
@@ -176,10 +200,10 @@ void UFlowStateMachine::AutoRegisterStatesFromSettings()
 
 void UFlowStateMachine::RegisterState(FName StateName, UFlowStateBase* State)
 {
-	if(!State || StateName.IsNone())
+	if (!State || StateName.IsNone())
 		return;
 
-	if(RegisteredStates.Contains(StateName))
+	if (RegisteredStates.Contains(StateName))
 	{
 		UE_LOG(LOG_FlowStateMachine, Warning, TEXT("State [%s] 已經註冊過，將覆蓋原有的"), *StateName.ToString());
 	}

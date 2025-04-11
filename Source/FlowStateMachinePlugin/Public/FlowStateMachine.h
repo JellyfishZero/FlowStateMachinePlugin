@@ -56,6 +56,15 @@ public:
 
 	UWorld* GetWorld() const override;
 
+	/**
+	 * [Debug] Dump目前的State堆疊
+	 * 在螢幕上和Log上顯示目前的State堆疊。
+	 * 展開堆疊State，並標記當前的State。
+	 * @param Seconds - 顯示時間(秒)
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
+	void DumpStates(float Seconds = 10.f);
+
 private:
 
 	/** State 執行堆疊 */

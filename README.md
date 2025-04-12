@@ -5,10 +5,12 @@
 1. 打開專案的.sln檔案，重新編譯。
 1. 開啟專案，從上方列表Tools->Plugins開啟Plugins頁面，搜尋FlowStateMachinePlugin，確認插件有被開啟。
 
+![image](https://github.com/user-attachments/assets/cd68ce59-0455-4c7c-a422-30c9675e5d36)
+
 # 建議使用方式
-## 生成StateMachine
+## 搭建StateMachine
 1. 建立自己的GameInstance，Override Init()。
-2. 宣告變數於.h當中。
+2. 宣告StateMachine變數於.h當中。
 ```cpp
   UPROPERTY(BlueprintReadOnly)
   UFlowStateMachine* StateMachine;
@@ -31,7 +33,7 @@ void UMyGameInstance::Init()
 
 ![image](https://github.com/user-attachments/assets/ad890ca1-049f-431d-b106-274f54a9338e)
 
-6. 接著可透過藍圖或C++，繼承FlowStateBase，來製作需要的State。若State要生效，要記得將其新增至第4步時，製作的Data Table當中。
+6. 接著可透過藍圖或C++，繼承FlowStateBase，來製作需要的State。若State要生效，須將其新增至第4步製作的Data Table當中。
 
 7. 載入第一個State的方式為，在任一BeginPlay處(如：GameMode)，取用GameInstance當中的FlowStateMachine，Call `ChangeState(State Id)`。(State Id 意為DataTable中的Row ID)。
 
@@ -48,4 +50,30 @@ void UMyGameInstance::Init()
 2. PushState：
 > 該指令會將新的State push進Stack當中，依序觸發當前State的`Pause()`，並觸發下一個State的`Begin()`。
 >
->  PushState時，當前的State若有設定StateData，會將StateData傳遞給欲Change的State，並可由其`Begin()`獲取。
+>  PushState時，當前的State若有設定StateData，會將StateData傳遞給欲Push的State，並可由其`Begin()`獲取。
+
+3. PopState：
+> 該指令會將當前的State從Stack當中pop掉，依序觸發`Finish()`，和前一個State的`Resume()`。
+>
+> PopState時，當前的State若有設定StateData，會將StateData傳遞給前一個的State，並可由其`Resume()`獲取。
+
+4. 可呼叫State切換方法的地方：
+	* StateMachine本身
+	* State：State可自行呼叫Change、Pop和Push無須透過StateMachine本身。
+## Debug
+
+1. FlowStateMachine中，有`DumpStates()`可供調用，會顯示出目前State堆疊的狀況，並指出當前State。
+```cpp
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
+	void DumpStates(float Seconds = 10.f);
+```
+
+## 題外話
+
+Plugin的圖示，是我親手繪製，再由Chat GPT美化。
+我未來製作的Plugin(若有的話)，都會選擇黑暗精靈當成我的圖標，美好性癖值得推廣。
+
+原稿：
+![PluginLogo](https://github.com/user-attachments/assets/591fb5f7-74a6-402a-a6f9-6b7fef579964)
+ChatGPT:
+![PluginLogo3](https://github.com/user-attachments/assets/7ec04412-b3d2-40a9-94ed-4ad6085f4ad6)

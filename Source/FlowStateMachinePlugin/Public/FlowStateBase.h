@@ -62,7 +62,7 @@ public:
 	 * 最後執行更改State的Begin。
 	 * @param StateName - State名稱
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	void ChangeState(FName StateName);
 
 	/**
@@ -70,14 +70,14 @@ public:
 	 * 執行原State的Pause後，再執行推上State的Begin。
 	 * @param StateName - State名稱
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	void PushState(FName StateName);
 
 	/**
 	 * 離開當前State。
 	 * 執行原State的Finish後，再執行堆疊中State的Resume。
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	void PopState();
 
 #pragma endregion
@@ -118,7 +118,7 @@ public:
 	 * 取得欲傳出的State Data
 	 * 這段理論上只在C++的State Machine 當中執行。
 	 */
-	UFUNCTION(BlueprintPure, Category = "State")
+	UFUNCTION(BlueprintPure, Category = "Flow State")
 	FORCEINLINE UObject* GetStateData() const;
 
 	/**
@@ -140,25 +140,25 @@ protected:
 	 * State 開始(藍圖實作)
 	 * @param Data - 上一個State傳入的參數
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "State")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Flow State")
 	void OnBegin(UObject* Data = nullptr);
 
 	/**
 	 * State 結束(藍圖實作)
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "State")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Flow State")
 	void OnFinish();
 
 	/**
 	 * State 恢復(藍圖實作)
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "State")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Flow State")
 	void OnResume(UObject* Data = nullptr);
 
 	/**
 	 * State 暫停(藍圖實作)
 	 */
-	UFUNCTION(BlueprintImplementableEvent, Category = "State")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Flow State")
 	void OnPause();
 
 #pragma endregion
@@ -168,7 +168,7 @@ protected:
 	/**
 	 * 設定想傳出給下一個State的資料
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	FORCEINLINE void SetStateData(UObject* InStateData);
 
 #pragma endregion

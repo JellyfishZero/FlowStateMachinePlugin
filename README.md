@@ -1,6 +1,6 @@
 # 安裝
 
-1. 下載該插件後，於Unreal專案的Plugins下解壓縮。
+1. 下載該插件後，於Unreal專案的Plugins下解壓縮。(可直接Clone該專案或者使用[Release](https://github.com/JellyfishZero/FlowStateMachinePlugin/releases)版本)
 1. 對專案的.uproject右鍵，選擇Generate Visual Studio Project Files。
 1. 打開專案的.sln檔案，重新編譯。
 1. 開啟專案，從上方列表Tools->Plugins開啟Plugins頁面，搜尋FlowStateMachinePlugin，確認插件有被開啟。

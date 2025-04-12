@@ -174,13 +174,16 @@ void UFlowStateMachine::AutoRegisterStatesFromSettings()
 	}
 
 	static const FString Context(TEXT("FlowStateMachine_LoadTable"));
-	TArray<FFlowStateRow*> Rows;
-	Table->GetAllRows<FFlowStateRow>(Context, Rows);
+	TArray<FName> RowNames = Table->GetRowNames();
 
-	for (FFlowStateRow* Row : Rows)
+	for (const FName& RowName : RowNames)
 	{
+		FFlowStateRow* Row = Table->FindRow<FFlowStateRow>(RowName, Context, false);
 		if (!Row || !Row->StateClass)
+		{
+			UE_LOG(LOG_FlowState, Error, TEXT("AutoRegisterStatesFromSettings: %s 的Row或StateClass 不存在"), *RowName.ToString());
 			continue;
+		}
 
 		UFlowStateBase* StateInstance = NewObject<UFlowStateBase>(this, Row->StateClass);
 		if (!StateInstance)
@@ -194,7 +197,7 @@ void UFlowStateMachine::AutoRegisterStatesFromSettings()
 			FOnStateRequestNoParam::CreateUObject(this, &UFlowStateMachine::PopState)
 		);
 
-		RegisterState(Row->StateName, StateInstance);
+		RegisterState(RowName, StateInstance);
 	}
 }
 

@@ -10,9 +10,6 @@ struct FLOWSTATEMACHINEPLUGIN_API FFlowStateRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "State Name"))
-	FName StateName;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Flow State")
 	TSubclassOf<class UFlowStateBase> StateClass;
 };

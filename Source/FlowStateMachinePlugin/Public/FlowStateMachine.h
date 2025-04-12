@@ -60,6 +60,8 @@ public:
 	 * [Debug] Dump目前的State堆疊
 	 * 在螢幕上和Log上顯示目前的State堆疊。
 	 * 展開堆疊State，並標記當前的State。
+	 * 
+	 * 建議透過CheatManager+GameInstance取得該類別實例後調用。
 	 * @param Seconds - 顯示時間(秒)
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Flow State")

@@ -36,3 +36,16 @@ void UMyGameInstance::Init()
 7. 載入第一個State的方式為，在任一BeginPlay處(如：GameMode)，取用GameInstance當中的FlowStateMachine，Call `ChangeState(State Id)`。(State Id 意為DataTable中的Row ID)。
 
 ## State流程說明
+
+1. ChangeState：
+>  該指令會將StateStack的所有State都pop掉，pop時會依序觸發State的`Pause()`和`Finish()`。
+>  最後再執行下一個(欲Change)的State的`Begin()`。
+>
+>  注意：關於`Pause()`是否需要執行，我還在考慮。還是只執行`Finish()`即可。
+>
+>  ChangeState時，當前的State若有設定StateData，會將StateData傳遞給欲Change的State，並可由其`Begin()`獲取。
+
+2. PushState：
+> 該指令會將新的State push進Stack當中，依序觸發當前State的`Pause()`，並觸發下一個State的`Begin()`。
+>
+>  PushState時，當前的State若有設定StateData，會將StateData傳遞給欲Change的State，並可由其`Begin()`獲取。

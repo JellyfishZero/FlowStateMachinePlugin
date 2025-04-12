@@ -60,6 +60,16 @@ void UMyGameInstance::Init()
 4. 可呼叫State切換方法的地方：
 	* StateMachine本身
 	* State：State可自行呼叫Change、Pop和Push無須透過StateMachine本身。
+
+## State之間的資料傳遞
+
+在當前state執行`PushState()`、`Pop()`、`ChangeState()`之前，可以先將想傳給下一個State的資料透過SetStateData()進行設定。
+傳入繼承自UObject的實例，下一個State就可以透過Cast成其他目標型別取得想要的資訊。
+```cpp
+	UFUNCTION(BlueprintCallable, Category = "Flow State")
+	FORCEINLINE void SetStateData(UObject* InStateData);
+```
+
 ## Debug
 
 1. FlowStateMachine中，有`DumpStates()`可供調用，會顯示出目前State堆疊的狀況，並指出當前State。

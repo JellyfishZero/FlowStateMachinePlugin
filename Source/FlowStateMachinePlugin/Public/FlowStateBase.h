@@ -186,7 +186,7 @@ private:
 	 * 可接受各種UObject的繼承類。
 	 */
 	UPROPERTY()
-	TWeakObjectPtr<UObject> StateData = nullptr;
+	TObjectPtr<UObject> StateData = nullptr;
 
 #pragma endregion
 
@@ -194,7 +194,7 @@ private:
 
 FORCEINLINE UObject* UFlowStateBase::GetStateData() const
 {
-	return StateData.IsValid() ? StateData.Get() : nullptr;
+	return IsValid(StateData) ? StateData.Get() : nullptr;
 }
 
 FORCEINLINE UObject* UFlowStateBase::TakeStateData()

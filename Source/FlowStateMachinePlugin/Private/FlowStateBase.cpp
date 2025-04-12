@@ -50,7 +50,7 @@ void UFlowStateBase::Begin(UObject* Data)
 void UFlowStateBase::Finish()
 {
 #if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
-	if (StateData.IsValid() == false && StateData != nullptr)
+	if (IsValid(StateData) == false && StateData != nullptr)
 	{
 		UE_LOG(LOG_FlowState, Warning, TEXT("State [%s] 進入Finish, 但其StateData已經無效！"), *GetName());
 	}
@@ -66,7 +66,7 @@ void UFlowStateBase::Resume(UObject* Data)
 void UFlowStateBase::Pause()
 {
 #if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
-	if (StateData.IsValid() == false && StateData != nullptr)
+	if (IsValid(StateData) == false && StateData != nullptr)
 	{
 		UE_LOG(LOG_FlowState, Warning, TEXT("State [%s] 進入Pause, 但其StateData已經無效！"), *GetName());
 	}

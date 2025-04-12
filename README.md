@@ -71,7 +71,7 @@ void UMyGameInstance::Init()
 ## 題外話
 
 Plugin的圖示，是我親手繪製，再由Chat GPT美化。
-我未來製作的Plugin(若有的話)，都會選擇黑暗精靈當成我的圖標，美好性癖值得推廣。
+我未來製作的Plugin(若有的話)，都會選擇黑暗精靈當成我的插件圖標，美好性癖值得推廣。
 
 原稿：
 ![PluginLogo](https://github.com/user-attachments/assets/591fb5f7-74a6-402a-a6f9-6b7fef579964)

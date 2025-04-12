@@ -59,17 +59,22 @@ void UFlowStateMachine::ChangeState(FName StateName)
 	UObject* OutData = nullptr;
 
 	// Pop 所有現有 State
-	while (StateStack.Num() > 0)
+	if (StateStack.Num() > 0)
 	{
-		UFlowStateBase* Current = StateStack.Pop();
-		Current->Pause();
+		// 只有當前最頂端的State有資格傳遞資料給下一個State
+		UFlowStateBase* CurrState = StateStack.Last(); // 取得堆疊頂部的 State
 
 		if (!OutData)
 		{
-			OutData = Current->TakeStateData();
+			OutData = CurrState->TakeStateData(); // 只從頂部的 State 取得資料
 		}
 
-		Current->Finish();
+		while (StateStack.Num() > 0)
+		{
+			UFlowStateBase* PopState = StateStack.Pop();
+			PopState->Pause(); // Check: 這邊看需不需要
+			PopState->Finish();
+		}
 	}
 
 	// Push 新的 State
@@ -96,9 +101,9 @@ void UFlowStateMachine::PushState(FName StateName)
 
 	if (StateStack.Num() > 0)
 	{
-		UFlowStateBase* Current = StateStack.Last();
-		OutData = Current->TakeStateData();
-		Current->Pause();
+		UFlowStateBase* CurrState = StateStack.Last();
+		OutData = CurrState->TakeStateData();
+		CurrState->Pause();
 	}
 
 	UFlowStateBase* NewState = RegisteredStates[StateName];
@@ -117,15 +122,15 @@ void UFlowStateMachine::PopState()
 	UObject* OutData = nullptr;
 
 	// Finish 當前 State
-	UFlowStateBase* TopState = StateStack.Pop();
-	OutData = TopState->TakeStateData();
-	TopState->Finish();
+	UFlowStateBase* CurrState = StateStack.Pop();
+	OutData = CurrState->TakeStateData();
+	CurrState->Finish();
 
 	// Resume 下層 State
 	if (StateStack.Num() > 0)
 	{
-		UFlowStateBase* Previous = StateStack.Last();
-		Previous->Resume(OutData);
+		UFlowStateBase* PrevState = StateStack.Last();
+		PrevState->Resume(OutData);
 	}
 }
 

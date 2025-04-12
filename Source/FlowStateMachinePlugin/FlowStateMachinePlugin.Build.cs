@@ -24,7 +24,8 @@ public class FlowStateMachinePlugin : ModuleRules
             new string[]
             {
                 "Core",
-                "Settings",
+                "CoreUObject",
+                "Engine",
 				// ... add other public dependencies that you statically link with here ...
 			}
             );
@@ -36,10 +37,16 @@ public class FlowStateMachinePlugin : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
-                "UnrealEd"
 				// ... add private dependencies that you statically link with here ...	
 			}
             );
+
+        // 只在編輯器建置時才加入 Settings 模組依賴
+        if (Target.bBuildEditor == true)
+        {
+            // 因為 Settings 模組主要用於 StartupModule 的內部實現，放入 Private 比較合適
+            PrivateDependencyModuleNames.Add("Settings");
+        }
 
         DynamicallyLoadedModuleNames.AddRange(
             new string[]

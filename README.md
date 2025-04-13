@@ -40,10 +40,8 @@ void UMyGameInstance::Init()
 ## State流程說明
 
 1. ChangeState：
->  該指令會將StateStack的所有State都pop掉，pop時會依序觸發State的`Pause()`和`Finish()`。
+>  該指令會將StateStack的所有State都pop掉，pop時會依序觸發State的`Finish()`。
 >  最後再執行下一個(欲Change)的State的`Begin()`。
->
->  注意：關於`Pause()`是否需要執行，我還在考慮。還是只執行`Finish()`即可。
 >
 >  ChangeState時，當前的State若有設定StateData，會將StateData傳遞給欲Change的State，並可由其`Begin()`獲取。
 

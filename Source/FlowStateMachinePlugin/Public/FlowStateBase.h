@@ -127,6 +127,12 @@ public:
 	UFUNCTION()
 	FORCEINLINE UObject* TakeStateData();
 
+	/**
+	 * 清除 StateData，確保下次重用時是乾淨的
+	 */
+	UFUNCTION()
+	FORCEINLINE void ClearStateData();
+
 #pragma endregion
 
 
@@ -200,8 +206,13 @@ FORCEINLINE UObject* UFlowStateBase::GetStateData() const
 FORCEINLINE UObject* UFlowStateBase::TakeStateData()
 {
 	UObject* Temp = GetStateData();
-	StateData = nullptr;
+	ClearStateData();
 	return Temp;
+}
+
+FORCEINLINE void UFlowStateBase::ClearStateData()
+{
+	StateData = nullptr;
 }
 
 FORCEINLINE void UFlowStateBase::SetStateData(UObject* InStateData)

@@ -72,8 +72,8 @@ void UFlowStateMachine::ChangeState(FName StateName)
 		while (StateStack.Num() > 0)
 		{
 			UFlowStateBase* PopState = StateStack.Pop();
-			PopState->Pause(); // Check: 這邊看需不需要
 			PopState->Finish();
+			PopState->ClearStateData();
 		}
 	}
 

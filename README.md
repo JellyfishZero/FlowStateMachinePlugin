@@ -67,6 +67,7 @@ void UMyGameInstance::Init()
 	UFUNCTION(BlueprintCallable, Category = "Flow State")
 	FORCEINLINE void SetStateData(UObject* InStateData);
 ```
+但注意：不要太依賴這個功能，並且盡量轉型為介面，而不要轉換成類。
 
 ## Debug
 
